@@ -1,16 +1,14 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using ColorGame;
 
-public class Receiver : MonoBehaviour
+public class Splitter : MonoBehaviour
 {
     public GameObject bullet;
     public float shotDelay = 0.5f;
 
     private bool willFireNextFrame = false;
-    private bool chargeToggle = false;
     private bool isCharged = false;
     private bool cooldown = false;
     private float cooldownTimer = 0.0f;
@@ -18,16 +16,14 @@ public class Receiver : MonoBehaviour
     private Vector3 screenPoint;
     private Vector3 offset;
 
-    private GameColor receiverCharge_1;
-    private GameColor receiverCharge_2;
-    private GameColor receiverColor;
+    private GameColor splitterColor;
     private SpriteRenderer sprite;
 
     // Use this for initialization
     void Start ()
     {
         sprite = GetComponent<SpriteRenderer>();
-        receiverColor = GameColor.COLOR_WHITE;
+        splitterColor = GameColor.COLOR_WHITE;
     }
 	
 	// Update is called once per frame
@@ -56,14 +52,14 @@ public class Receiver : MonoBehaviour
             willFireNextFrame = false;
         }
 
-        Collider2D[] results = new Collider2D[5];
+        Collider2D[] results = new Collider2D[10];
         int resultCount = Physics2D.OverlapCollider(GetComponent<Collider2D>(), new ContactFilter2D(), results);
-        if( resultCount > 0)
+        for (int i = 0; i < resultCount; i++)
         {
-            Collider2D collider = Array.Find(results, (x => x != null && x.GetComponent<Bullet>() != null && x.GetComponent<Bullet>().GetShooter() != gameObject));
-            if (collider)
+            Bullet bulletHit = results[i].gameObject.GetComponent<Bullet>();
+            if (bulletHit != null && bulletHit.GetShooter() != gameObject)
             {
-                ProcessBullet(collider.GetComponent<Bullet>());
+                ProcessBullet(bulletHit);
             }
         }
     }
@@ -88,37 +84,25 @@ public class Receiver : MonoBehaviour
             return;
         }
 
-        GameObject bulletInstance = Instantiate(bullet, transform.position, transform.rotation);
-        Bullet bulletComp = bulletInstance.GetComponent<Bullet>();
-        bulletComp.SetColor(receiverColor);
-        bulletComp.SetShooter(gameObject);
+        GameObject bulletInstance_1 = Instantiate(bullet, transform.position, Quaternion.AngleAxis(transform.rotation.eulerAngles.z + 45.0f, Vector3.forward));
+        GameObject bulletInstance_2 = Instantiate(bullet, transform.position, Quaternion.AngleAxis(transform.rotation.eulerAngles.z - 45.0f, Vector3.forward));
+
+        Bullet bulletComp_1 = bulletInstance_1.GetComponent<Bullet>();
+        bulletComp_1.SetColor(splitterColor);
+        bulletComp_1.SetShooter(gameObject);
+
+        Bullet bulletComp_2 = bulletInstance_2.GetComponent<Bullet>();
+        bulletComp_2.SetColor(splitterColor);
+        bulletComp_2.SetShooter(gameObject);
+
         cooldown = true;
     }
 
-    void ProcessBullet(Bullet bulletHit)
+    void ProcessBullet(Bullet lastBullet)
     {
-        if( chargeToggle )
-        {
-            receiverCharge_1 = bulletHit.GetColor();
-            chargeToggle = !chargeToggle;
-        }
-        else
-        {
-            receiverCharge_2 = bulletHit.GetColor();
-            chargeToggle = !chargeToggle;
-        }
-
-        if (receiverCharge_1 != GameColor.COLOR_WHITE && receiverCharge_2 != GameColor.COLOR_WHITE)
-        {
-            GameColor color = ColorDefs.CombineColors(receiverCharge_1, receiverCharge_2);
-            receiverColor = color;
-            sprite.color = ColorDefs.GetColor(color);
-            isCharged = (receiverColor != GameColor.COLOR_WHITE);
-
-            receiverCharge_1 = GameColor.COLOR_WHITE;
-            receiverCharge_2 = GameColor.COLOR_WHITE;
-        }
-
-        Destroy(bulletHit.gameObject);
+        splitterColor = lastBullet.GetColor();
+        sprite.color = ColorDefs.GetColor(splitterColor);
+        isCharged = (splitterColor != GameColor.COLOR_WHITE);
+        Destroy(lastBullet.gameObject);
     }
 }
