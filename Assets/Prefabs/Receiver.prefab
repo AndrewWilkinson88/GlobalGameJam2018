@@ -79,7 +79,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bullet: {fileID: 1674179947410798, guid: 79d9875a78c8d7f42b1de74d790ffe52, type: 2}
-  shotDelay: 0.5
+  shotDelay: 0.1
 --- !u!212 &212686555154835518
 SpriteRenderer:
   m_ObjectHideFlags: 1

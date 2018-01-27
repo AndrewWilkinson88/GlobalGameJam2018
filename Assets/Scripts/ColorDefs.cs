@@ -22,7 +22,9 @@ namespace ColorGame
         public static GameColor CombineColors(GameColor color1, GameColor color2)
         {
             int mix = (int)color1 | (int)color2;
-            if (Enum.IsDefined(typeof(GameColor), mix))
+            int overrideMix = (int)color1 & (int)color2;
+
+            if (Enum.IsDefined(typeof(GameColor), mix) && overrideMix == 0)
             {
                 return (GameColor)mix;
             }

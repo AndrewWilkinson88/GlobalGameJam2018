@@ -11,7 +11,10 @@ public class Bullet : MonoBehaviour
     private float timeAlive = 0.0f;
     private GameObject shooter;
     private GameColor bulletColor;
+
     private SpriteRenderer sprite;
+    private TrailRenderer trail;
+    private ParticleSystem particle;
 
 	// Update is called once per frame
 	void Update ()
@@ -37,9 +40,24 @@ public class Bullet : MonoBehaviour
         {
             sprite = GetComponent<SpriteRenderer>();
         }
+        if( trail == null)
+        {
+            trail = GetComponent<TrailRenderer>();
+        }
+        if( particle == null)
+        {
+            particle = GetComponent<ParticleSystem>();
+        }
+
 
         bulletColor = newColor;
-        sprite.color = ColorDefs.GetColor(bulletColor);
+        Color color = ColorDefs.GetColor(bulletColor);
+        sprite.color = color;
+
+        trail.startColor = color;
+        trail.endColor = new Color(color.r, color.g, color.b, 0.0f);
+        ParticleSystem.MainModule settings = particle.main;
+        settings.startColor = new ParticleSystem.MinMaxGradient(color);
     }
 
     public void SetShooter(GameObject go)
