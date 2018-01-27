@@ -14,14 +14,14 @@ namespace ColorGame
         COLOR_GREEN = 4,
         COLOR_CYAN = 5,
         COLOR_YELLOW = 6,
-        COLOR_WHITE = 64
+        COLOR_WHITE = 8
     }
 
     public static class ColorDefs
     {
         public static GameColor CombineColors(GameColor color1, GameColor color2)
         {
-            int mix = (int)color1 & (int)color2;
+            int mix = (int)color1 | (int)color2;
             if (Enum.IsDefined(typeof(GameColor), mix))
             {
                 return (GameColor)mix;

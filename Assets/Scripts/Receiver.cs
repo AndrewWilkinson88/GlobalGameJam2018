@@ -84,70 +84,9 @@ public class Receiver : MonoBehaviour
     void ProcessBullet(Bullet lastBullet)
     {
         GameColor color = ColorDefs.CombineColors(receiverColor, lastBullet.GetColor());
+        receiverColor = color;
         sprite.color = ColorDefs.GetColor(color);
-
-        //switch (lastBullet.GetColor())
-        //{
-        //    case GameColor.COLOR_BLUE:
-        //        isCharged = true;
-        //        if( receiverColor == GameColor.COLOR_GREEN)
-        //        {
-        //            receiverColor = GameColor.PLAYER_MIX;
-        //            sprite.color = Color.cyan;
-        //        }
-        //        else if (receiverColor == GameColor.COLOR_RED)
-        //        {
-        //            receiverColor = GameColor.PLAYER_MIX;
-        //            sprite.color = Color.magenta;
-        //        }
-        //        else
-        //        {
-        //            receiverColor = GameColor.COLOR_BLUE;
-        //            sprite.color = Color.blue;
-        //        }
-        //        break;
-        //    case GameColor.COLOR_RED:
-        //        isCharged = true;
-        //        if (receiverColor == GameColor.COLOR_GREEN)
-        //        {
-        //            receiverColor = GameColor.PLAYER_MIX;
-        //            sprite.color = Color.yellow;
-        //        }
-        //        else if (receiverColor == GameColor.COLOR_BLUE)
-        //        {
-        //            receiverColor = GameColor.PLAYER_MIX;
-        //            sprite.color = Color.magenta;
-        //        }
-        //        else
-        //        {
-        //            receiverColor = GameColor.COLOR_RED;
-        //            sprite.color = Color.red;
-        //        }
-        //        break;
-        //    case GameColor.COLOR_GREEN:
-        //        isCharged = true;
-        //        if (receiverColor == GameColor.COLOR_BLUE)
-        //        {
-        //            receiverColor = GameColor.PLAYER_MIX;
-        //            sprite.color = Color.cyan;
-        //        }
-        //        else if (receiverColor == GameColor.COLOR_RED)
-        //        {
-        //            receiverColor = GameColor.PLAYER_MIX;
-        //            sprite.color = Color.yellow;
-        //        }
-        //        else
-        //        {
-        //            receiverColor = GameColor.COLOR_GREEN;
-        //            sprite.color = Color.green;
-        //        }
-        //        break;
-        //    case GameColor.COLOR_WHITE:
-        //        isCharged = false;
-        //        receiverColor = GameColor.COLOR_WHITE;
-        //        sprite.color = Color.white;
-        //        break;
-        //}
+        isCharged = (receiverColor != GameColor.COLOR_WHITE);
 
         Destroy(lastBullet.gameObject);
     }
