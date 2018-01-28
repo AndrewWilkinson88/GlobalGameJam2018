@@ -17,6 +17,14 @@ namespace ColorGame
         COLOR_WHITE = 8
     }
 
+    public enum Facing
+    {
+        LEFT = 0,
+        RIGHT,
+        UP,
+        DOWN
+    }
+
     public static class ColorDefs
     {
         public static GameColor CombineColors(GameColor color1, GameColor color2)

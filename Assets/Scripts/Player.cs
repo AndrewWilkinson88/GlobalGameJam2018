@@ -5,19 +5,9 @@ using ColorGame;
 
 public class Player : MonoBehaviour
 {
-    enum Facing
-    {
-        LEFT = 0,
-        RIGHT,
-        UP,
-        DOWN
-    }
-
-
     public float speed = 5.0f;
     public float shotDelay = 0.5f;
     public GameObject bullet;
-    public List<GameColor> colorCycle;
 
     private bool cooldown = false;
     private float cooldownTimer = 0.0f;
@@ -46,23 +36,12 @@ public class Player : MonoBehaviour
             DetermineFacing(movement);
         }
 
-        //Commands
-        if (Input.GetKeyDown(KeyCode.Q))
-        {
-            int newIndex = colorCycle.IndexOf(playerColor) - 1;
-            playerColor = colorCycle[newIndex >= 0 ? newIndex : colorCycle.Count - 1];
-            SetColor();
-        }
-
-        if (Input.GetKeyDown(KeyCode.E))
-        {
-            playerColor = colorCycle[(colorCycle.IndexOf(playerColor) + 1) % colorCycle.Count];
-            SetColor();
-        }
-
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            FireBullet();
+            if (playerColor != GameColor.COLOR_WHITE)
+            {
+                FireBullet();
+            }
         }
 
         //Timers
@@ -73,6 +52,28 @@ public class Player : MonoBehaviour
             {
                 cooldownTimer = 0.0f;
                 cooldown = false;
+            }
+        }
+    }
+
+    void FixedUpdate()
+    {
+        Collider2D[] results = new Collider2D[5];
+        ContactFilter2D filter = new ContactFilter2D();
+        filter.SetLayerMask(1 << LayerMask.NameToLayer("Bullet"));
+        int resultCount = Physics2D.OverlapCollider(GetComponent<Collider2D>(), filter, results);
+        if (resultCount > 0)
+        {
+            for (int i = 0; i < resultCount; i++)
+            {
+                Bullet currentBullet = results[i].GetComponent<Bullet>();
+                if (currentBullet.GetShooter() != gameObject)
+                {
+                    GameColor color = currentBullet.GetColor();
+                    playerColor = color;
+                    SetColor();
+                    currentBullet.RemoveBullet();
+                }
             }
         }
     }

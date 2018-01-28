@@ -25,7 +25,7 @@ public class Bullet : MonoBehaviour
         timeAlive += Time.deltaTime;
         if( timeAlive > travelTime)
         {
-            Destroy(gameObject);
+            RemoveBullet();
         }
     }
 
@@ -49,7 +49,6 @@ public class Bullet : MonoBehaviour
             particle = GetComponent<ParticleSystem>();
         }
 
-
         bulletColor = newColor;
         Color color = ColorDefs.GetColor(bulletColor);
         sprite.color = color;
@@ -68,5 +67,20 @@ public class Bullet : MonoBehaviour
     public GameObject GetShooter()
     {
         return shooter;
+    }
+
+    public void RemoveBullet()
+    {
+        speed = 0.0f;
+        sprite.enabled = false;
+        particle.Stop();
+        GetComponent<Collider2D>().enabled = false;
+        StartCoroutine(DelayRemoval());
+    }
+
+    IEnumerator DelayRemoval()
+    {
+        yield return new WaitForSeconds(1.0f);
+        Destroy(gameObject);
     }
 }
