@@ -109,6 +109,9 @@ public class Player : MonoBehaviour
             case (Facing.DOWN):
                 sprite.sprite = DownSprite;
                 break;
+            default:
+                sprite.sprite = LeftSprite;
+                break;
         }
     }
 

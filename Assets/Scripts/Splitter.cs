@@ -11,10 +11,14 @@ public class Splitter : MonoBehaviour
     public List<MeshRenderer> baseMaterials;
     public List<MeshRenderer> bulbRenderers;
 
+    public Facing splitterFace1;
+    public Facing splitterFace2;
+
     private bool willFireNextFrame = false;
     private bool isCharged = false;
     private bool cooldown = false;
     private float cooldownTimer = 0.0f;
+    private float collisionTimer = 0.0f;
 
     private Vector3 screenPoint;
     private Vector3 offset;
@@ -66,17 +70,94 @@ public class Splitter : MonoBehaviour
         }
     }
 
-    void OnMouseDown()
+    private void OnCollisionStay2D(Collision2D collision)
     {
-        screenPoint = Camera.main.WorldToScreenPoint(gameObject.transform.position);
-        offset = gameObject.transform.position - Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, screenPoint.z));
+        if (collision.gameObject.name == "Player")
+        {
+            collisionTimer += Time.deltaTime;
+            if (collisionTimer > 0.5f)
+            {
+                ContactPoint2D[] contacts = new ContactPoint2D[5];
+                int numContacts = collision.GetContacts(contacts);
+                PushBlock(numContacts, contacts);
+                collisionTimer = 0.0f;
+            }
+        }
     }
 
-    void OnMouseDrag()
+    private void OnCollisionExit2D(Collision2D collision)
     {
-        Vector3 curScreenPoint = new Vector3(Input.mousePosition.x, Input.mousePosition.y, screenPoint.z);
-        Vector3 curPosition = Camera.main.ScreenToWorldPoint(curScreenPoint) + offset;
-        transform.position = curPosition;
+        if (collision.gameObject.name == "Player")
+        {
+            collisionTimer = 0;
+        }
+    }
+
+    private void PushBlock(int numContacts, ContactPoint2D[] contacts)
+    {
+        Vector3 thisPos = transform.position;
+        Vector3 otherPos = contacts[0].collider.transform.position;
+        if (Mathf.Abs(thisPos.x - otherPos.x) > Mathf.Abs(thisPos.y - otherPos.y))
+        {
+            if (thisPos.x > otherPos.x)
+            {
+                //push right
+                transform.Translate(-5.0f, 0.0f, 0.0f);
+            }
+            else
+            {
+                //push left
+                transform.Translate(5.0f, 0.0f, 0.0f);
+            }
+        }
+        else
+        {
+            if (thisPos.y > otherPos.y)
+            {
+                //push up
+                transform.Translate(0.0f, 5.0f, 0.0f);
+            }
+            else
+            {
+                //push down
+                transform.Translate(0.0f, -5.0f, 0.0f);
+            }
+        }
+
+    }
+
+    Quaternion GetRotation(Facing face)
+    {
+        Quaternion rotation = new Quaternion();
+        switch (face)
+        {
+            case (Facing.LEFT):
+                rotation = Quaternion.AngleAxis(90.0f, Vector3.forward);
+                break;
+            case (Facing.RIGHT):
+                rotation = Quaternion.AngleAxis(-90.0f, Vector3.forward);
+                break;
+            case (Facing.UP):
+                rotation = Quaternion.AngleAxis(0.0f, Vector3.forward);
+                break;
+            case (Facing.DOWN):
+                rotation = Quaternion.AngleAxis(180.0f, Vector3.forward);
+                break;
+            case (Facing.LEFT_UP):
+                rotation = Quaternion.AngleAxis(45.0f, Vector3.forward);
+                break;
+            case (Facing.RIGHT_UP):
+                rotation = Quaternion.AngleAxis(-45.0f, Vector3.forward);
+                break;
+            case (Facing.LEFT_DOWN):
+                rotation = Quaternion.AngleAxis(135.0f, Vector3.forward);
+                break;
+            case (Facing.RIGHT_DOWN):
+                rotation = Quaternion.AngleAxis(-135.0f, Vector3.forward);
+                break;
+        }
+
+        return rotation;
     }
 
     void FireBullet()
@@ -86,8 +167,8 @@ public class Splitter : MonoBehaviour
             return;
         }
 
-        GameObject bulletInstance_1 = Instantiate(bullet, transform.position, Quaternion.AngleAxis(transform.rotation.eulerAngles.z + 45.0f, Vector3.forward));
-        GameObject bulletInstance_2 = Instantiate(bullet, transform.position, Quaternion.AngleAxis(transform.rotation.eulerAngles.z - 45.0f, Vector3.forward));
+        GameObject bulletInstance_1 = Instantiate(bullet, transform.position, GetRotation(splitterFace1) );
+        GameObject bulletInstance_2 = Instantiate(bullet, transform.position, GetRotation(splitterFace2) );
 
         Bullet bulletComp_1 = bulletInstance_1.GetComponent<Bullet>();
         bulletComp_1.SetColor(splitterColor);

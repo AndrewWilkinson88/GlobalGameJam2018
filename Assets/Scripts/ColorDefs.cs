@@ -22,7 +22,11 @@ namespace ColorGame
         LEFT = 0,
         RIGHT,
         UP,
-        DOWN
+        DOWN,
+        LEFT_UP,
+        RIGHT_UP,
+        LEFT_DOWN,
+        RIGHT_DOWN
     }
 
     public static class ColorDefs

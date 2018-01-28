@@ -134,7 +134,7 @@ public class Emitter : MonoBehaviour
 
     void FireBullet()
     {
-        if (cooldown)
+        if (cooldown || emitterColor == GameColor.COLOR_WHITE)
         {
             return;
         }
@@ -154,9 +154,21 @@ public class Emitter : MonoBehaviour
             case (Facing.DOWN):
                 rotation = Quaternion.AngleAxis(180.0f, Vector3.forward);
                 break;
+            case (Facing.LEFT_UP):
+                rotation = Quaternion.AngleAxis(45.0f, Vector3.forward);
+                break;
+            case (Facing.RIGHT_UP):
+                rotation = Quaternion.AngleAxis(-45.0f, Vector3.forward);
+                break;
+            case (Facing.LEFT_DOWN):
+                rotation = Quaternion.AngleAxis(135.0f, Vector3.forward);
+                break;
+            case (Facing.RIGHT_DOWN):
+                rotation = Quaternion.AngleAxis(-135.0f, Vector3.forward);
+                break;
         }
-        GameObject bulletInstance = Instantiate(bullet, firingPoint.transform.position, rotation);
 
+        GameObject bulletInstance = Instantiate(bullet, firingPoint.transform.position, rotation);
         Bullet bulletComp = bulletInstance.GetComponent<Bullet>();
         bulletComp.SetColor(emitterColor);
         bulletComp.SetShooter(gameObject);
