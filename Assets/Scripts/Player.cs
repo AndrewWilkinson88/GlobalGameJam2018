@@ -12,7 +12,7 @@ public class Player : MonoBehaviour
     private bool cooldown = false;
     private float cooldownTimer = 0.0f;
 
-    private Facing playerFacing;
+    public Facing playerFacing;
     private GameColor playerColor;
     private SpriteRenderer sprite;
 

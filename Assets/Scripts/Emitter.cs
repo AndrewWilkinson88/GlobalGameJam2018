@@ -19,6 +19,9 @@ public class Emitter : MonoBehaviour
     private bool willFireNextFrame = false;
     private bool chargeToggle = false;
     private bool cooldown = false;
+
+    private int collisionCount = 0;
+    private float collisionTimer = 0.0f;
     private float cooldownTimer = 0.0f;
 
     private Vector3 screenPoint;
@@ -49,6 +52,62 @@ public class Emitter : MonoBehaviour
         {
             willFireNextFrame = true;
         }
+    }
+
+    private void OnCollisionStay2D(Collision2D collision)
+    {
+        if (collision.gameObject.name == "Player")
+        {
+            collisionTimer += Time.deltaTime;
+            if( collisionTimer > 0.5f)
+            {
+                ContactPoint2D[] contacts = new ContactPoint2D[5];
+                int numContacts = collision.GetContacts(contacts);
+                PushBlock(numContacts, contacts);
+                collisionTimer = 0.0f;
+            }
+        }
+    }
+
+    private void OnCollisionExit2D(Collision2D collision)
+    {
+        if (collision.gameObject.name == "Player")
+        {
+            collisionTimer = 0;
+        }
+    }
+
+    private void PushBlock(int numContacts, ContactPoint2D[] contacts )
+    {
+        Vector3 thisPos = transform.position;
+        Vector3 otherPos = contacts[0].collider.transform.position;
+        if (Mathf.Abs(thisPos.x - otherPos.x) > Mathf.Abs(thisPos.y - otherPos.y))
+        {
+            if (thisPos.x > otherPos.x)
+            {
+                //push right
+                transform.Translate(5.0f, 0.0f, 0.0f);
+            }
+            else
+            {
+                //push left
+                transform.Translate(-5.0f, 0.0f, 0.0f);
+            }
+        }
+        else
+        {
+            if (thisPos.y > otherPos.y)
+            {
+                //push up
+                transform.Translate(0.0f, 5.0f, 0.0f);
+            }
+            else
+            {
+                //push down
+                transform.Translate(0.0f, -5.0f, 0.0f);
+            }
+        }
+        
     }
 
     void FixedUpdate()
