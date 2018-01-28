@@ -40,8 +40,11 @@ public class Player : MonoBehaviour
         float moveHorizontal = Input.GetAxisRaw("Horizontal");
         float moveVertical = Input.GetAxisRaw("Vertical");
         Vector3 movement = new Vector3(moveHorizontal, moveVertical, 0.0f);
-        transform.Translate(movement * speed * Time.deltaTime);
-        DetermineFacing(movement);
+        if (Mathf.Abs(moveHorizontal) + Mathf.Abs(moveVertical) > 0.1f)
+        {
+            transform.Translate(movement * speed * Time.deltaTime);
+            DetermineFacing(movement);
+        }
 
         //Commands
         if (Input.GetKeyDown(KeyCode.Q))
@@ -102,10 +105,10 @@ public class Player : MonoBehaviour
         switch( playerFacing )
         {
             case (Facing.LEFT):
-                rotation = Quaternion.AngleAxis(-90.0f, Vector3.forward);
+                rotation = Quaternion.AngleAxis(90.0f, Vector3.forward);
                 break;
             case (Facing.RIGHT):
-                rotation = Quaternion.AngleAxis(90.0f, Vector3.forward);
+                rotation = Quaternion.AngleAxis(-90.0f, Vector3.forward);
                 break;
             case (Facing.UP):
                 rotation = Quaternion.AngleAxis(0.0f, Vector3.forward);

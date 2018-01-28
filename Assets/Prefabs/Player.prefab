@@ -95,7 +95,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1101955350204968}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 40, y: -24.1, z: 0}
+  m_LocalPosition: {x: 51.9, y: -24.1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4745438599126888}
@@ -109,7 +109,7 @@ Animator:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1101955350204968}
-  m_Enabled: 1
+  m_Enabled: 0
   m_Avatar: {fileID: 0}
   m_Controller: {fileID: 9100000, guid: f957ab0f3db8d70488ec6efdd9ea6b3d, type: 2}
   m_CullingMode: 0
@@ -131,7 +131,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 25
-  shotDelay: 1
+  shotDelay: 0.5
   bullet: {fileID: 1674179947410798, guid: 79d9875a78c8d7f42b1de74d790ffe52, type: 2}
   colorCycle: 080000000200000004000000
 --- !u!212 &212215457878653674
