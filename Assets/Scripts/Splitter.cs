@@ -8,6 +8,9 @@ public class Splitter : MonoBehaviour
     public GameObject bullet;
     public float shotDelay = 0.5f;
 
+    public List<MeshRenderer> baseMaterials;
+    public List<MeshRenderer> bulbRenderers;
+
     private bool willFireNextFrame = false;
     private bool isCharged = false;
     private bool cooldown = false;
@@ -17,13 +20,12 @@ public class Splitter : MonoBehaviour
     private Vector3 offset;
 
     private GameColor splitterColor;
-    private SpriteRenderer sprite;
 
     // Use this for initialization
     void Start ()
     {
-        sprite = GetComponent<SpriteRenderer>();
         splitterColor = GameColor.COLOR_WHITE;
+        SetEmitterColor(Color.grey);
     }
 	
 	// Update is called once per frame
@@ -96,13 +98,29 @@ public class Splitter : MonoBehaviour
         bulletComp_2.SetShooter(gameObject);
 
         cooldown = true;
+        isCharged = false;
+        splitterColor = GameColor.COLOR_WHITE;
+        SetEmitterColor(Color.grey);
     }
 
     void ProcessBullet(Bullet lastBullet)
     {
         splitterColor = lastBullet.GetColor();
-        sprite.color = ColorDefs.GetColor(splitterColor);
         isCharged = (splitterColor != GameColor.COLOR_WHITE);
+        SetEmitterColor(ColorDefs.GetColor(splitterColor));
         Destroy(lastBullet.gameObject);
+    }
+
+    void SetEmitterColor(Color newColor)
+    {
+        foreach (MeshRenderer render in bulbRenderers)
+        {
+            render.material.color = new Color(newColor.r, newColor.g, newColor.b, 0.0f);
+        }
+
+        foreach (MeshRenderer render in baseMaterials)
+        {
+            render.material.color = newColor;
+        }
     }
 }

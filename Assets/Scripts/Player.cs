@@ -8,11 +8,17 @@ public class Player : MonoBehaviour
     public float speed = 5.0f;
     public float shotDelay = 0.5f;
     public GameObject bullet;
+    public GameObject gunTip;
 
     private bool cooldown = false;
     private float cooldownTimer = 0.0f;
 
     public Facing playerFacing;
+    public Sprite LeftSprite;
+    public Sprite RightSprite;
+    public Sprite UpSprite;
+    public Sprite DownSprite;
+
     private GameColor playerColor;
     private SpriteRenderer sprite;
 
@@ -88,6 +94,22 @@ public class Player : MonoBehaviour
         {
             playerFacing = (movement.y < 0) ? Facing.DOWN : Facing.UP;
         }
+
+        switch( playerFacing)
+        {
+            case (Facing.LEFT):
+                sprite.sprite = LeftSprite;
+                break;
+            case (Facing.RIGHT):
+                sprite.sprite = RightSprite;
+                break;
+            case (Facing.UP):
+                sprite.sprite = UpSprite;
+                break;
+            case (Facing.DOWN):
+                sprite.sprite = DownSprite;
+                break;
+        }
     }
 
     void SetColor()
@@ -119,7 +141,7 @@ public class Player : MonoBehaviour
                 break;
         }
 
-        GameObject bulletInstance = Instantiate(bullet, transform.position, rotation);
+        GameObject bulletInstance = Instantiate(bullet, gunTip.transform.position, rotation);
         Bullet bulletComp = bulletInstance.GetComponent<Bullet>();
         bulletComp.SetColor(playerColor);
         bulletComp.SetShooter(gameObject);
